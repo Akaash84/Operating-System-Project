@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SJF Food Order Scheduler</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 20px auto;
+            max-width: 800px;
+            padding: 20px;
+            background: linear-gradient(to bottom, #2e003e, #4b0049, #5c003d, #533824);
+            color: #f5e8dc;
+            background-size: cover;
+            background-attachment: fixed;
+        }
+
+        h2, h3 {
+            text-align: center;
+            color: #ffe6cc;
+            text-shadow: 2px 2px 8px rgba(255, 180, 120, 0.3);
+        }
+
+        .order-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(37, 22, 29, 0.9);
+            border: 1px solid rgba(255, 215, 160, 0.1);
+            padding: 20px 40px 30px 20px;
+            margin: 4px 0;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(255, 200, 150, 0.08);
+            backdrop-filter: blur(6px);
+        }
+
+        .order-form:not(:first-child) {
+            margin-top: 8px;
+        }
+
+        label {
+            font-weight: 500;
+            color: #eac8b3;
+        }
+
+        input[type="number"], input[type="text"] {
+            padding: 10px;
+            height: 28px;
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid #6a3d57;
+            font-size: 16px;
+            background-color: rgba(46, 0, 62, 0.3);
+            color: #f3e0d9;
+            transition: 0.3s ease;
+            margin-top: 6px;
+        }
+
+        input[type="number"]:focus, input[type="text"]:focus {
+            border-color: #aa6c8e;
+            box-shadow: 0 0 10px rgba(170, 108, 142, 0.3);
+            outline: none;
+        }
+
+        button {
+            background: linear-gradient(to right, #540152, #5c003d, #8b5e3c);
+            color: #fceeea;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px 5px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(100, 50, 60, 0.3);
+            transition: transform 0.2s ease, background 0.3s ease;
+        }
+
+        button:hover {
+            background: linear-gradient(to right, #8c5d3a, #5c003d);
+            transform: scale(1.05);
+        }
+
+        .btn-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(255, 180, 120, 0.1);
+            backdrop-filter: blur(4px);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255, 230, 200, 0.1);
+            text-align: center;
+            color: #f4dccc;
+        }
+
+        th {
+            background: linear-gradient(to right, #5a2b2b, #3e1d2a);
+            color: #fbe8dd;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        p {
+            font-size: 16px;
+            text-align: center;
+            margin-top: 20px;
+            color: #ffd9b3;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+        }
+
+        h5 {
+            color: #dd9c8d;
+            font-size: 1.1em;
+            text-align: center;
+            margin: 8px 0 12px 0;
+        }
+
+        .input-section {
+            display: flex;
+            justify-content: space-between;
+            gap: 35px;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .form-section {
+            padding: 15px;
+            width: 100%;
+        }
+
+        .input-section > div {
+            flex: 1;
+            min-width: 150px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>🍽️ SJF Food Order Scheduler</h2>
+
+<div id="ordersContainer">
+    <div class="order-form" id="order1">
+        <div class="form-section">
+            <h5>🧑‍🍳 Order-1</h5>
+            <div class="input-section">
+                <div>
+                    <label>Order ID:</label><br>
+                    <input type="text" id="orderId1" placeholder="Order ID"><br>
+                </div>
+                <div>
+                    <label>Order Placed Time:</label><br>
+                    <input type="number" id="orderPlacedTime1" placeholder="Order Placed Time"><br>
+                </div>
+                <div>
+                    <label>Cooking Time:</label><br>
+                    <input type="number" id="cookingTime1" placeholder="Cooking Time"><br>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="btn-container">
+    <button onclick="addOrder()">➕ Add Order</button>
+    <button onclick="calculateSJF()">🗓️ Schedule</button>
+</div>
+
+<div id="result"></div>
+
+<script>
+    let orderCount = 1;
+
+    function addOrder() {
+        orderCount++;
+        const container = document.getElementById("ordersContainer");
+
+        const form = document.createElement("div");
+        form.className = "order-form";
+        form.id = `order${orderCount}`;
+
+        form.innerHTML = `
+            <div class="form-section">
+                <h5>🧑‍🍳 Order-${orderCount}</h5>
+                <div class="input-section">
+                    <div>
+                        <label>Order ID:</label><br>
+                        <input type="text" id="orderId${orderCount}" placeholder="Order ID"><br>
+                    </div>
+                    <div>
+                        <label>Order Placed Time:</label><br>
+                        <input type="number" id="orderPlacedTime${orderCount}" placeholder="Order Placed Time"><br>
+                    </div>
+                    <div>
+                        <label>Cooking Time:</label><br>
+                        <input type="number" id="cookingTime${orderCount}" placeholder="Cooking Time"><br>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        container.appendChild(form);
+    }
+
+    function calculateSJF() {
+        const orderIds = [];
+        const placedTimes = [];
+        const cookingTimes = [];
+
+        for (let i = 1; i <= orderCount; i++) {
+            const orderId = document.getElementById(`orderId${i}`).value.trim();
+            const placedTime = parseInt(document.getElementById(`orderPlacedTime${i}`).value);
+            const cookingTime = parseInt(document.getElementById(`cookingTime${i}`).value);
+
+            if (orderId && !isNaN(placedTime) && !isNaN(cookingTime)) {
+                orderIds.push(orderId);
+                placedTimes.push(placedTime);
+                cookingTimes.push(cookingTime);
+            }
+        }
+        if (orderIds.length === 0) {
+            document.getElementById("result").innerHTML = "<p>Please enter at least one valid order.</p>";
+            return;
+        }
+
+        let currentTime = 0;
+        let completed = 0;
+        const n = orderIds.length;
+        const result = [];
+        const isCompleted = Array(n).fill(false);
+        let totalWT = 0, totalTAT = 0;
+
+        while (completed < n) {
+            let idx = -1;
+            let minCook = Infinity;
+
+            for (let i = 0; i < n; i++) {
+                if (!isCompleted[i] && placedTimes[i] <= currentTime && cookingTimes[i] < minCook) {
+                    minCook = cookingTimes[i];
+                    idx = i;
+                }
+            }
+
+            if (idx === -1) {
+                currentTime++;
+            } else {
+                const startTime = currentTime;
+                const completionTime = currentTime + cookingTimes[idx];
+                const turnaroundTime = completionTime - placedTimes[idx];
+                const waitingTime = turnaroundTime - cookingTimes[idx];
+
+                result.push({
+                    orderId: orderIds[idx],
+                    placedTime: placedTimes[idx],
+                    cookingTime: cookingTimes[idx],
+                    completionTime,
+                    turnaroundTime,
+                    waitingTime
+                });
+
+                isCompleted[idx] = true;
+                completed++;
+                currentTime = completionTime;
+                totalWT += waitingTime;
+                totalTAT += turnaroundTime;
+            }
+        }
+
+        const rows = result.map(order => `
+            <tr>
+                <td>${order.orderId}</td>
+                <td>${order.placedTime}</td>
+                <td>${order.cookingTime}</td>
+                <td>${order.completionTime}</td>
+                <td>${order.waitingTime}</td>
+                <td>${order.turnaroundTime}</td>
+            </tr>
+        `).join("");
+
+        const tableHTML = `
+            <h3>📊 Execution Order (SJF - Non-Preemptive)</h3>
+            <table>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Order Placed Time</th>
+                    <th>Cooking Time</th>
+                    <th>Completion Time</th>
+                    <th>Waiting Time</th>
+                    <th>Turnaround Time</th>
+                </tr>
+                ${rows}
+            </table>
+            <p><strong>Average Waiting Time:</strong> ${(totalWT / n).toFixed(2)} minutes</p>
+            <p><strong>Average Turnaround Time:</strong> ${(totalTAT / n).toFixed(2)} minutes</p>
+        `;
+
+        document.getElementById("result").innerHTML = tableHTML;
+    }
+</script>
+
+</body>
+</html>

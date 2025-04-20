@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FCFS Bank Queue Scheduler</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 20px auto;
+            max-width: 800px;
+            padding: 20px;
+            background: linear-gradient(to bottom, #0a1a3f 30%, #1d2d5c 60%, #655d49 100%);
+            
+            background-size: cover;
+            background-attachment: fixed;
+            color: #f5f5f5;
+        }
+
+        h2, h3 {
+            text-align: center;
+            color: #f5f0ff;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+        }
+
+        .customer-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            padding-bottom: 30px;
+            padding-right: 40px;
+            margin: 4px 0;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(6px);
+        }
+
+        .customer-form:not(:first-child) {
+            margin-top: 10px;
+        }
+
+        label {
+            font-weight: 500;
+            color: #e0d4fc;
+        }
+
+        input[type="number"], input[type="text"] {
+            padding: 10px;
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid #bbb2ee;
+            font-size: 14px;
+            background-color: rgba(255, 255, 255, 0.07);
+            color: #fff;
+            transition: 0.3s ease;
+            margin-top: 6px;
+        }
+
+        input[type="number"]:focus, input[type="text"]:focus {
+            border-color: #c8b6ff;
+            box-shadow: 0 0 10px rgba(200, 182, 255, 0.3);
+            outline: none;
+        }
+
+        button {
+            background: linear-gradient(to right, #3b2d5b, #5c3dc0);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px 5px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(120, 100, 255, 0.2);
+            transition: transform 0.2s ease, background 0.3s ease;
+        }
+
+        button:hover {
+            background: linear-gradient(to right, #d4d0dc, #7457e0);
+            transform: scale(1.05);
+        }
+
+        .btns {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(4px);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            color: #f8f0ff;
+        }
+
+        th {
+            background: linear-gradient(to right, #c5c0d1, #251d4b);
+            color: #eae0ff;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .input-section {
+            display: flex;
+            justify-content: space-between;
+            gap: 35px;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .input-section > div {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        h5 {
+            color: #dacbff;
+            font-size: 1.1em;
+            text-align: center;
+            margin: 8px 0 12px 0;
+        }
+
+        p {
+            font-size: 16px;
+            text-align: center;
+            margin-top: 20px;
+            color: #e8dbff;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <h2>💎 FCFS Bank Queue Scheduler</h2>
+
+    <div id="customersContainer">
+        <div class="customer-form" id="customer1">
+            <h5>🧑‍💼 Customer-1</h5>
+            <div class="input-section">
+                <div>
+                    <label>Customer ID:</label><br>
+                    <input type="text" class="customerId" placeholder="Customer ID">
+                </div>
+                <div>
+                    <label>Arrival Time:</label><br>
+                    <input type="number" class="arrivalTime" placeholder="Arrival Time">
+                </div>
+                <div>
+                    <label>Service Time:</label><br>
+                    <input type="number" class="serviceTime" placeholder="Service Time">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="btns">
+        <button onclick="addCustomer()">➕ Add Customer</button>
+        <button onclick="calculateFCFS()">✅ Calculate</button>
+    </div>
+
+    <div id="result"></div>
+
+    <script>
+        let customerCount = 1;
+
+        function addCustomer() {
+            customerCount++;
+            const container = document.getElementById("customersContainer");
+
+            const form = document.createElement("div");
+            form.className = "customer-form";
+            form.id = `customer${customerCount}`;
+
+            form.innerHTML = `
+                <h5>🧑‍💼 Customer-${customerCount}</h5>
+                <div class="input-section">
+                    <div>
+                        <label>Customer ID:</label><br>
+                        <input type="text" class="customerId" placeholder="Customer ID">
+                    </div>
+                    <div>
+                        <label>Arrival Time:</label><br>
+                        <input type="number" class="arrivalTime" placeholder="Arrival Time">
+                    </div>
+                    <div>
+                        <label>Service Time:</label><br>
+                        <input type="number" class="serviceTime" placeholder="Service Time">
+                    </div>
+                </div>
+            `;
+
+            container.appendChild(form);
+        }
+
+        function calculateFCFS() {
+            const customerIds = document.querySelectorAll(".customerId");
+            const arrivalTimes = document.querySelectorAll(".arrivalTime");
+            const serviceTimes = document.querySelectorAll(".serviceTime");
+
+            const customers = [];
+
+            for (let i = 0; i < customerIds.length; i++) {
+                const id = customerIds[i].value.trim();
+                const arrival = parseInt(arrivalTimes[i].value);
+                const service = parseInt(serviceTimes[i].value);
+
+                if (id && !isNaN(arrival) && !isNaN(service)) {
+                    customers.push({ id, arrival, service });
+                }
+            }
+
+            if (customers.length === 0) {
+            document.getElementById("result").innerHTML = "<p>Please enter at least one valid customer.</p>";
+            return;
+        }
+            customers.sort((a, b) => a.arrival - b.arrival);
+
+            let currentTime = 0;
+            let totalWT = 0, totalTAT = 0;
+            const result = [];
+
+            for (const customer of customers) {
+                if (customer.arrival > currentTime) {
+                    currentTime = customer.arrival;
+                }
+
+                const start = currentTime;
+                const completion = currentTime + customer.service;
+                const turnaround = completion - customer.arrival;
+                const waiting = turnaround - customer.service;
+
+                result.push({
+                    ...customer,
+                    completion,
+                    turnaround,
+                    waiting
+                });
+
+                totalWT += waiting;
+                totalTAT += turnaround;
+                currentTime = completion;
+            }
+
+            const rows = result.map(c => `
+                <tr>
+                    <td>${c.id}</td>
+                    <td>${c.arrival}</td>
+                    <td>${c.service}</td>
+                    <td>${c.completion}</td>
+                    <td>${c.waiting}</td>
+                    <td>${c.turnaround}</td>
+                </tr>
+            `).join("");
+
+            const tableHTML = `
+                <h3>📋 FCFS Execution Table</h3>
+                <table>
+                    <tr>
+                        <th>Customer ID</th>
+                        <th>Arrival Time</th>
+                        <th>Service Time</th>
+                        <th>Completion Time</th>
+                        <th>Waiting Time</th>
+                        <th>Turnaround Time</th>
+                    </tr>
+                    ${rows}
+                </table>
+                <p><strong>Average Waiting Time:</strong> ${(totalWT / result.length).toFixed(2)} minutes</p>
+                <p><strong>Average Turnaround Time:</strong> ${(totalTAT / result.length).toFixed(2)} minutes</p>
+            `;
+
+            document.getElementById("result").innerHTML = tableHTML;
+        }
+    </script>
+</body>
+</html>

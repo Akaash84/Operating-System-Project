@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hospital Management - Priority Scheduling</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 20px auto;
+            max-width: 95%;
+            padding: 30px;
+            background: linear-gradient(to bottom, #0f0c29, #302b63, #027288);
+            color: #1b3c3c;
+            background-attachment: fixed;
+        }
+
+        h2, h3 {
+            text-align: center;
+            color: #ffffff;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        .legend {
+            text-align: center;
+            font-size: 16px;
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+
+        .order-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(0, 11, 46, 0.9);
+            border: 1px solid rgba(0, 11, 46, 0.9);
+            padding: 20px 40px;
+            margin: 10px 0;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.1);
+        }
+
+        label {
+            font-weight: 500;
+            color: #065dd6;
+        }
+
+        input[type="number"], input[type="text"] {
+            padding: 10px;
+            height: 28px;
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid #012d83;
+            font-size: 16px;
+            background-color: #000753;
+            color: #c9d3d4;
+            margin-top: 6px;
+            transition: 0.3s ease;
+        }
+
+        input[type="number"]:focus, input[type="text"]:focus {
+            border-color: #02419a;
+            box-shadow: 0 0 10px rgba(2, 75, 131, 0.2);
+            outline: none;
+        }
+
+        button {
+            /* background: linear-gradient(to right, #0a7543, #1c5c2d); */
+            background: linear-gradient(to right, #00796b, #004d40);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px 5px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0, 150, 136, 0.2);
+            transition: transform 0.2s ease, background 0.3s ease;
+        }
+
+        button:hover {
+            /* background: linear-gradient(to right, #00796b, #004d40); */
+            background: linear-gradient(to right, #0a7543, #1c5c2d);
+            transform: scale(1.05);
+        }
+
+        .btn-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            background: #014675;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 150, 136, 0.08);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e0f2f1;
+            text-align: center;
+            color:  #aae4df;
+        }
+
+        th {
+            background: #4bc5bb;
+            color: #001634;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        p {
+            font-size: 16px;
+            text-align: center;
+            margin-top: 20px;
+            color: #83bcb7;
+        }
+
+        h5 {
+            color: #029d3b;
+            font-size: 1.1em;
+            text-align: center;
+            margin: 8px 0 12px 0;
+        }
+
+        .input-section {
+            display: flex;
+            justify-content: space-between;
+            gap: 40px;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .form-section {
+            padding: 15px;
+            width: 100%;
+        }
+
+        .input-section > div {
+            flex: 1;
+            min-width: 180px;
+        }
+        .legend{
+            color: #02f059;
+        }
+        .hiii{
+            color: rgba(70, 144, 254, 0.858);
+        }
+    </style>
+</head>
+<body>
+
+<h2 class="hiii">🏥 Priority Scheduling - Hospital Management</h2>
+<p class="legend">1 : Emergency &nbsp;&nbsp;&nbsp;&nbsp; 2 : Critical &nbsp;&nbsp;&nbsp;&nbsp; 3 : Follow-up &nbsp;&nbsp;&nbsp;&nbsp; 4 : General</p>
+
+<div id="patientsContainer">
+    <div class="order-form" id="patient1">
+        <div class="form-section">
+            <h5>👨‍⚕ Patient-1</h5>
+            <div class="input-section">
+                <div>
+                    <label>Patient ID:</label><br>
+                    <input type="text" id="patientId1" placeholder="Patient ID"><br>
+                </div>
+                <div>
+                    <label>Treatment Time:</label><br>
+                    <input type="number" id="burstTime1" placeholder="Treatment Time"><br>
+                </div>
+                <div>
+                    <label>Priority (1-High to 4-Low):</label><br>
+                    <input type="number" id="priority1" placeholder="Priority"><br>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="btn-container">
+    <button onclick="addPatient()">➕ Add Patient</button>
+    <button onclick="schedulePriority()">🗓️  Schedule</button>
+</div>
+
+<div id="result"></div>
+
+<script>
+    let patientCount = 1;
+
+    function addPatient() {
+        patientCount++;
+        const container = document.getElementById("patientsContainer");
+
+        const form = document.createElement("div");
+        form.className = "order-form";
+        form.id = `patient${patientCount}`;
+
+        form.innerHTML = `
+            <div class="form-section">
+                <h5>👨‍⚕ Patient-${patientCount}</h5>
+                <div class="input-section">
+                    <div>
+                        <label>Patient ID:</label><br>
+                        <input type="text" id="patientId${patientCount}" placeholder="Patient ID"><br>
+                    </div>
+                    <div>
+                        <label>Treatment Time:</label><br>
+                        <input type="number" id="burstTime${patientCount}" placeholder="Treatment Time"><br>
+                    </div>
+                    <div>
+                        <label>Priority:</label><br>
+                        <input type="number" id="priority${patientCount}" placeholder="Priority"><br>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        container.appendChild(form);
+    }
+
+    function schedulePriority() {
+        const patientIds = [], burstTimes = [], priorities = [];
+
+        for (let i = 1; i <= patientCount; i++) {
+            const id = document.getElementById(`patientId${i}`).value.trim();
+            const burst = parseInt(document.getElementById(`burstTime${i}`).value);
+            const priority = parseInt(document.getElementById(`priority${i}`).value);
+
+            if (id && !isNaN(burst) && !isNaN(priority)) {
+                patientIds.push(id);
+                burstTimes.push(burst);
+                priorities.push(priority);
+            }
+        }
+
+        if (patientIds.length === 0) {
+            document.getElementById("result").innerHTML = "<p>Please enter at least one valid patient.</p>";
+            return;
+        }
+
+        const patients = patientIds.map((id, i) => ({
+            patientId: id,
+            burstTime: burstTimes[i],
+            priority: priorities[i]
+        }));
+
+        // Sort by priority (lower number = higher priority)
+        patients.sort((a, b) => a.priority - b.priority);
+
+        let currentTime = 0;
+        let totalWT = 0, totalTAT = 0;
+        const result = [];
+
+        for (const p of patients) {
+            const startTime = currentTime;
+            const completionTime = currentTime + p.burstTime;
+            const turnaroundTime = completionTime; // Arrival time is always 0
+            const waitingTime = startTime;
+
+            result.push({
+                ...p,
+                completionTime,
+                turnaroundTime,
+                waitingTime
+            });
+
+            currentTime = completionTime;
+            totalWT += waitingTime;
+            totalTAT += turnaroundTime;
+        }
+
+        const rows = result.map(p => `
+            <tr>
+                <td>${p.patientId}</td>
+                <td>${p.burstTime}</td>
+                <td>${p.priority}</td>
+                <td>${p.completionTime}</td>
+                <td>${p.waitingTime}</td>
+                <td>${p.turnaroundTime}</td>
+            </tr>
+        `).join("");
+
+        const tableHTML = `
+            <h3>📋 Priority Scheduling Results</h3>
+            <table>
+                <tr>
+                    <th>Patient ID</th>
+                    <th>Treatment Time</th>
+                    <th>Priority</th>
+                    <th>Completion Time</th>
+                    <th>Waiting Time</th>
+                    <th>Turnaround Time</th>
+                </tr>
+                ${rows}
+            </table>
+            <p><strong>Average Waiting Time:</strong> ${(totalWT / result.length).toFixed(2)} minutes</p>
+            <p><strong>Average Turnaround Time:</strong> ${(totalTAT / result.length).toFixed(2)} minutes</p>
+        `;
+
+        document.getElementById("result").innerHTML = tableHTML;
+    }
+</script>
+
+</body>
+</html>

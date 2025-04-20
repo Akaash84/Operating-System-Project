@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OS CPU Scheduling</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to bottom right, #3b0a32, #000000);
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    /* align-items: center; */
+    height: 100vh;
+}
+
+.container {
+    text-align: center;
+    margin: auto;
+}
+
+h1 {
+    margin-bottom: 40px;
+    font-size: 2.5em;
+    color: #ff4da6;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 180px);
+    gap: 50px;
+    justify-content: center;
+}
+
+.box {
+    background: linear-gradient(145deg, #4a113c, #000000);
+    padding: 40px;
+    padding-right: 150px;
+    border-radius: 15px;
+    box-shadow: 0 0 10px #808081;
+}
+
+.btn {
+    text-decoration: none;
+    color: white;
+    width: 80px;
+    font-weight: bold;
+    padding: 10px 20px;
+    display: inline-block;
+    background-color: #8e44ad;
+    border-radius: 10px;
+    transition: background 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #a7489d;
+}
+
+    </style>
+</head>
+<body>
+  
+    <div class="container">
+        <h1>OS CPU Scheduling</h1>
+        <div class="grid">
+            <div class="box"><a href="fcfs.html" class="btn">FCFS</a></div>
+            <div class="box"><a href="sjf.html" class="btn">SJF</a></div>
+            <div class="box"><a href="priority.html" class="btn">Priority</a></div>
+            <div class="box"><a href="roundrobin.html" class="btn">Round Robin</a></div>
+            
+        </div>
+    </div>
+</body>
+</html>

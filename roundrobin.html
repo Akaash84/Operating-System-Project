@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title> Round Robin Train Platform Scheduler</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 20px auto;
+            max-width: 800px;
+            padding: 20px;
+            background: linear-gradient(to bottom, #3e1c00, #69452b, #7e6b51);
+            color: #f0faff;
+            background-size: cover;
+            background-attachment: fixed;
+        }
+
+        h2, h3 {
+            text-align: center;
+            color: #fff8e1;
+            text-shadow: 2px 2px 8px rgba(0, 170, 255, 0.3);
+        }
+
+        .train-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(26, 21, 11, 0.8); /* Darker background for the form */
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            padding: 20px 40px 30px 20px;
+            margin: 4px 0;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+            backdrop-filter: blur(6px);
+        }
+
+        .train-form:not(:first-child) {
+            margin-top: 8px;
+        }
+
+        label {
+            font-weight: 500;
+            color: #ffcc66;
+        }
+
+        input[type="number"], input[type="text"] {
+            padding: 10px;
+            height: 28px;
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid #ffcc66;
+            font-size: 16px;
+            background-color: rgba(57, 45, 16, 0.5);
+            color: #f0faff;
+            transition: 0.3s ease;
+            margin-top: 6px;
+        }
+
+        input[type="number"]:focus, input[type="text"]:focus {
+            border-color: #ffcc66;
+            box-shadow: 0 0 10px rgba(255, 204, 102, 0.5);
+            outline: none;
+        }
+
+        button {
+            background: linear-gradient(to right, #4e2c1f, #8c5e3c);
+            color: #f0faff;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px 5px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(70, 50, 12, 0.3);
+            transition: transform 0.2s ease, background 0.3s ease;
+        }
+
+        button:hover {
+            background: linear-gradient(to right, #8c5e3c, #957348);
+            transform: scale(1.05);
+        }
+
+        .btn-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 180, 255, 0.1);
+            backdrop-filter: blur(4px);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            color: #ffefc0;
+        }
+
+        th {
+            background: linear-gradient(to right, #4e2c1f, #8c5e3c);
+            color: #e0f7ff;
+        }
+
+        h5 {
+            color: #ffcc66;
+            font-size: 1.1em;
+            text-align: center;
+            margin: 8px 0 12px 0;
+        }
+
+        .input-section {
+            display: flex;
+            justify-content: space-between;
+            gap: 35px;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .form-section {
+            padding: 15px;
+            width: 100%;
+        }
+
+        .input-section > div {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        p {
+            font-size: 16px;
+            text-align: center;
+            color: #adebff;
+        }
+    </style>
+</head>
+<body>
+
+<h2>🚉 Round Robin Train Platform Scheduler</h2>
+
+<div id="trainContainer">
+    <div class="train-form" id="train1">
+        <div class="form-section">
+            <h5>🚆 Train-1</h5>
+            <div class="input-section">
+                <div>
+                    <label>Train ID:</label><br>
+                    <input type="text" id="trainId1" placeholder="Train ID"><br>
+                </div>
+                <div>
+                    <label>Arrival Time:</label><br>
+                    <input type="number" id="arrivalTime1" placeholder="Arrival Time"><br>
+                </div>
+                <div>
+                    <label>Service Time (minutes):</label><br>
+                    <input type="number" id="serviceTime1" placeholder="Service Time"><br>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="btn-container">
+    <button onclick="addTrain()">➕ Add Train</button>
+    <button onclick="calculateRR()">🗓️ Schedule</button>
+</div>
+
+<div id="result"></div>
+
+<script>
+    let trainCount = 1;
+
+    function addTrain() {
+        trainCount++;
+        const container = document.getElementById("trainContainer");
+
+        const form = document.createElement("div");
+        form.className = "train-form";
+        form.id = `train${trainCount}`;
+
+        form.innerHTML = `
+            <div class="form-section">
+                <h5>🚆 Train-${trainCount}</h5>
+                <div class="input-section">
+                    <div>
+                        <label>Train ID:</label><br>
+                        <input type="text" id="trainId${trainCount}" placeholder="Train ID"><br>
+                    </div>
+                    <div>
+                        <label>Arrival Time:</label><br>
+                        <input type="number" id="arrivalTime${trainCount}" placeholder="Arrival Time"><br>
+                    </div>
+                    <div>
+                        <label>Service Time (minutes):</label><br>
+                        <input type="number" id="serviceTime${trainCount}" placeholder="Service Time"><br>
+                    </div>
+                </div>
+            </div>
+        `;
+        container.appendChild(form);
+    }
+
+    function calculateRR() {
+        const quantum = 2; // Time slice
+        const trains = [];
+
+        for (let i = 1; i <= trainCount; i++) {
+            const id = document.getElementById(`trainId${i}`).value.trim();
+            const arrival = parseInt(document.getElementById(`arrivalTime${i}`).value);
+            const service = parseInt(document.getElementById(`serviceTime${i}`).value);
+
+            if (id && !isNaN(arrival) && !isNaN(service)) {
+                trains.push({ id, arrival, service, remaining: service });
+            }
+        }
+
+        if (trains.length === 0) {
+            document.getElementById("result").innerHTML = "<p>Please enter at least one valid train.</p>";
+            return;
+        }
+
+        let time = 0, queue = [], result = [];
+        trains.sort((a, b) => a.arrival - b.arrival);
+        let i = 0;
+
+        while (i < trains.length || queue.length > 0) {
+            while (i < trains.length && trains[i].arrival <= time) {
+                queue.push(trains[i]);
+                i++;
+            }
+
+            if (queue.length === 0) {
+                time = trains[i].arrival;
+                continue;
+            }
+
+            let current = queue.shift();
+            let execTime = Math.min(quantum, current.remaining);
+            time += execTime;
+            current.remaining -= execTime;
+
+            result.push({
+                id: current.id,
+                execTime,
+                currentTime: time
+            });
+
+            while (i < trains.length && trains[i].arrival <= time) {
+                queue.push(trains[i]);
+                i++;
+            }
+
+            if (current.remaining > 0) {
+                queue.push(current);
+            }
+        }
+
+        const rows = result.map((r, idx) => `
+            <tr>
+                <td>${idx + 1}</td>
+                <td>${r.id}</td>
+                <td>${r.execTime} min</td>
+                <td>${r.currentTime} min</td>
+            </tr>
+        `).join("");
+
+        const tableHTML = `
+            <h3>🛤 Platform Schedule - Round Robin</h3>
+            <table>
+                <tr>
+                    <th>#</th>
+                    <th>Train ID</th>
+                    <th>Time Allocated</th>
+                    <th>Platform Time</th>
+                </tr>
+                ${rows}
+            </table>
+        `;
+
+        document.getElementById("result").innerHTML = tableHTML;
+    }
+</script>
+</body>
+</html>
